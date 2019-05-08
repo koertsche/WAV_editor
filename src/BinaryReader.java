@@ -10,9 +10,10 @@ public class BinaryReader {
         return Files.readAllBytes(path);
     }
 
-    void writeBinaryFile(byte[] bytes, String fileName) throws IOException {
+    boolean writeBinaryFile(byte[] bytes, String fileName) throws IOException {
         Path path = Paths.get(fileName);
         Files.write(path, bytes); //creates, overwrites
+        return Files.exists(path);
     }
 
     private static void log(Object msg){

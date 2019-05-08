@@ -6,7 +6,7 @@ public class main {
     public static void main(String[] args) throws IOException{
          WaveFile w = new WaveFile();
 
-         if (w.readin()){
+         if (w.read()){
              byte[] b1 = w.get_bytes(0,3);
              System.out.println(new String(b1)); // Prints RIFF
          }

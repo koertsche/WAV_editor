@@ -7,9 +7,14 @@ public class WaveFile {
 
     private File _file;
     private byte[] _binaryexpression;
-    private String _latesterror = "No error.";
+    private String _latesterror = "";
 
-    public void WavFile(File file, byte[] binaryexpression){
+    public WaveFile(){
+        _file = null;
+        _binaryexpression = null;
+    }
+
+    public WaveFile(File file, byte[] binaryexpression){
         _file = file;
         _binaryexpression = binaryexpression;
     }
@@ -34,17 +39,24 @@ public class WaveFile {
         this._binaryexpression = binaryexpression;
     }
 
-    public boolean readin() throws IOException {
+    public boolean read() throws IOException {
         System.out.println("Input path of WAVE-file:");
         Scanner scanner = new Scanner(System.in);
+
         this._file = new File(scanner.nextLine());
-        if (_is_wav_file(this._file)){
+
+        if (_file.exists()){
             BinaryReader r = new BinaryReader();
             this._binaryexpression = r.readBinaryFile(_file.getAbsolutePath());
             return true;
         } else {
             return false;
         }
+    }
+
+    public boolean write(String filename) throws IOException{
+        BinaryReader r = new BinaryReader();
+        return r.writeBinaryFile(this._binaryexpression,filename + _WAV);
     }
 
     public byte[] get_bytes(int start_index, int end_index){
@@ -60,21 +72,6 @@ public class WaveFile {
     }
 
 
-    /*
-     * Private Class decleration
-     */
-
-    private boolean _is_wav_file(File file){
-        if (file.exists()){
-            if (file.getName().endsWith(_WAV)){
-                return true;
-            }
-            _latesterror = "Error: No WAV file!";
-            return false;
-        }
-        _latesterror = "Error: No such File in directory. File not exists!";
-        return false;
-    }
 
 
 
