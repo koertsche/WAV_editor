@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class WaveFile {
@@ -33,11 +34,17 @@ public class WaveFile {
         this._binaryexpression = binaryexpression;
     }
 
-    public boolean _readin_filepath(){
-        System.out.println("Input absolute file path of WAV-file:");
+    public boolean readin() throws IOException {
+        System.out.println("Input path of WAVE-file:");
         Scanner scanner = new Scanner(System.in);
         this._file = new File(scanner.nextLine());
-        return _is_wav_file(this._file);
+        if (_is_wav_file(this._file)){
+            BinaryReader r = new BinaryReader();
+            this._binaryexpression = r.readBinaryFile(_file.getAbsolutePath());
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public byte[] get_bytes(int start_index, int end_index){
