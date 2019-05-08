@@ -7,7 +7,6 @@ public class WaveFile {
 
     private File _file;
     private byte[] _binaryexpression;
-    private String _latesterror = "";
 
     public WaveFile(){
         _file = null;
@@ -31,19 +30,15 @@ public class WaveFile {
         this._file = file;
     }
 
-    public void output_latesterror(){
-        System.out.println(_latesterror);
-    }
-
     public void set_binaryexpression(byte[] binaryexpression){
         this._binaryexpression = binaryexpression;
     }
 
     public boolean read() throws IOException {
-        System.out.println("Input path of WAVE-file:");
-        Scanner scanner = new Scanner(System.in);
-
-        this._file = new File(scanner.nextLine());
+        /** CONSOLE oder UI CODE**/
+            System.out.println("Input path of WAVE-file:");
+            Scanner scanner = new Scanner(System.in);
+            this._file = new File(scanner.nextLine());
 
         if (_file.exists()){
             BinaryReader r = new BinaryReader();
@@ -65,10 +60,6 @@ public class WaveFile {
             newbytes[i-start_index] = this._binaryexpression[i];
         }
         return newbytes;
-    }
-
-    public String ToString(){
-        return this._file.getAbsolutePath();
     }
 
 

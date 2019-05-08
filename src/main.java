@@ -11,6 +11,8 @@ public class main {
              System.out.println(new String(b1)); // Prints RIFF
          }
 
+         w.write("test");
+
     }
 
     private static WaveFile binary_Subtraction(WaveFile minuend, WaveFile subtrahend){
