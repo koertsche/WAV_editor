@@ -13,6 +13,11 @@ public class WaveFile {
         _binaryexpression = null;
     }
 
+    public WaveFile(String path){
+        _file = new File(path);
+        _binaryexpression = null;
+    }
+
     public WaveFile(File file, byte[] binaryexpression){
         _file = file;
         _binaryexpression = binaryexpression;
@@ -36,9 +41,11 @@ public class WaveFile {
 
     public boolean read() throws IOException {
         /** CONSOLE oder UI CODE**/
+        if (_file == null) {
             System.out.println("Input path of WAVE-file:");
             Scanner scanner = new Scanner(System.in);
             this._file = new File(scanner.nextLine());
+        }
 
         if (_file.exists()){
             BinaryReader r = new BinaryReader();
