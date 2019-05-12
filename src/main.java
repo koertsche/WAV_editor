@@ -10,7 +10,6 @@ public class main {
                 v.read_Samples();
                 System.out.println(v.get_samples()[1].ToString());
          }
-         w.write("test");
     }
 
     private static WaveFile binary_Subtraction(WaveFile minuend, WaveFile subtrahend){

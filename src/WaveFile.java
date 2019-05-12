@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 public class WaveFile {
     private static final String _WAV = ".wav";
-    private static final int OFFSET_FMT = 16;
     private static final int OFFSET_DATA = 44;
 
     private File _file;
