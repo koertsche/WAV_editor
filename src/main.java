@@ -3,12 +3,13 @@ import java.io.IOException;
 public class main {
 
     public static void main(String[] args) throws IOException{
+         ByteUtils util = new ByteUtils();
          WaveFile w = new WaveFile("/Users/nkoertge/Desktop/AAFE_v-3.0.2-deploy/R2_m1_music___techno___Scooter-HowMuchIsTheFish.wav");
          WaveFile v = new WaveFile("/Users/nkoertge/Desktop/AAFE_v-3.0.2-deploy/R2_m8_music___techno___Scooter-HowMuchIsTheFish.wav");
 
          if (w.read() && v.read()){
-                v.read_Samples();
-                System.out.println(v.get_samples()[1].ToString());
+                w.read_Samples();
+                System.out.println(util.bytes_to_uint_32_le(w.get_samples()[1].get_data()));
          }
     }
 

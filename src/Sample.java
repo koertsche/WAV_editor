@@ -1,14 +1,17 @@
 public class Sample {
+    private int _channel;
     private byte[] _data;
     private int _size;
 
-    public Sample(int size){
+    public Sample(int size, int is_channel){
         this._size = size;
+        this._channel = is_channel;
         this._data = new byte[size];
     }
 
-    public Sample(int size, byte[] data){
+    public Sample(int size, int is_channel, byte[] data){
         this._size = size;
+        this._channel = is_channel;
         this._data = data;
     }
 
@@ -16,16 +19,12 @@ public class Sample {
         return _size;
     }
 
-    public byte[] get_data() {
-        return _data;
+    public int get_channel() {
+        return _channel;
     }
 
-    public String ToString(){
-        String str = "sample: [";
-        for (int i=0; i < _data.length-1; i++){
-            str = str + _data[i] + ",";
-        }
-        return str + _data[_data.length-1] +  "]";
+    public byte[] get_data() {
+        return _data;
     }
 
 }
