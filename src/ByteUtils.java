@@ -1,8 +1,16 @@
+import java.nio.ByteBuffer;
+
 public class ByteUtils {
     //long in Java represents uint_32 from C
-    public long bytes_to_uint_32_le(byte[] b){
+    public int bytes_to_int_32_le(byte[] b){
         String hexcode = bytes_to_HexCode(reverse_byte(b));
-        return HexCodeIntArray_to_long(String_to_int_array_with_HexCode(hexcode,b.length));
+        return HexCodeIntArray_to_int(String_to_int_array_with_HexCode(hexcode,b.length));
+    }
+
+    public byte[] int_32_le_to_bytes(int i){
+        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
+        buffer.putInt(i);
+        return buffer.array();
     }
 
     public String bytes_to_HexCode(byte[] b){
@@ -13,14 +21,22 @@ public class ByteUtils {
                 str = "00" +str;
             } else {
                 if (temp.length()==1){
-                    str = "0" + temp +str;
+                    str = "0" + temp + str;
                 } else {
-                    str = temp +str;
+                    str = temp + str;
                 }
             }
 
         }
         return str;
+    }
+
+    public byte[] get_bytes(byte[] b, int start_index, int end_index){
+        byte[] newbytes = new byte[end_index-start_index+1];
+        for (int i=start_index; i <= end_index; i++){
+            newbytes[i-start_index] = b[i];
+        }
+        return newbytes;
     }
 
     public byte[] reverse_byte(byte b[])
@@ -45,10 +61,10 @@ public class ByteUtils {
         return hex;
     }
 
-    private long HexCodeIntArray_to_long(int[] hexcode){
-        long val = 0;
+    private int HexCodeIntArray_to_int(int[] hexcode){
+        int val = 0;
         for (int i=hexcode.length-1; i>=0; i--){
-            val = val + (long) (hexcode[i] * Math.pow(16,Math.abs(hexcode.length-1-i)));
+            val = val + (int) (hexcode[i] * Math.pow(16,Math.abs(hexcode.length-1-i)));
         }
         return val;
     }
