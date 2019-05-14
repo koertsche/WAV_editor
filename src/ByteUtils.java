@@ -1,7 +1,8 @@
 import java.nio.ByteBuffer;
 
 public class ByteUtils {
-    //long in Java represents uint_32 from C
+
+
     public int bytes_to_int_32_le(byte[] b){
         String hexcode = bytes_to_HexCode(reverse_byte(b));
         return HexCodeIntArray_to_int(String_to_int_array_with_HexCode(hexcode,b.length));
@@ -31,6 +32,11 @@ public class ByteUtils {
         return str;
     }
 
+
+
+
+    //*******Byte to Byte Operations**********
+
     public byte[] get_bytes(byte[] b, int start_index, int end_index){
         byte[] newbytes = new byte[end_index-start_index+1];
         for (int i=start_index; i <= end_index; i++){
@@ -50,6 +56,12 @@ public class ByteUtils {
 
         return b;
     }
+
+
+
+
+
+
 
     //***************Private******************
 

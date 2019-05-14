@@ -4,7 +4,6 @@ public class main {
 
     public static void main(String[] args) throws IOException{
          //insert Toolbox to use them in main
-         ByteUtils byte_util = new ByteUtils();
          WaveFileUtils wave_util = new WaveFileUtils();
          //Create instance of each Wave-File
          WaveFile R2_m1_scooter = new WaveFile("/Users/nkoertge/Desktop/AAFE_v-3.0.2-deploy/R2_m1_music___techno___Scooter-HowMuchIsTheFish.wav");

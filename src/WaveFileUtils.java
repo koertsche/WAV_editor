@@ -28,10 +28,13 @@ public class WaveFileUtils {
         }
 
         return new WaveFile(header_of_WaveFile, result, (int) smaller_WaveFile.get_Framesize());
-
-        //Was passiert wenn ich Pro sample bei der einen Datei zwei channels habe und bei der anderen nur einen, wie subrahiere ich?
         //Gleicher Startpunkt des Sounds? Korrigieren?
     }
+
+
+
+
+
 
     //*********Private Declarations*********
 

@@ -1,7 +1,11 @@
 public class Sample {
+    //Membervariablen
     private byte[] _data;
     private int _size;
     private int _channel;
+
+
+    //********Konstruktoren************
 
     public Sample(int size){
         this._size = size;
@@ -14,6 +18,11 @@ public class Sample {
         this._channel = is_channel;
     }
 
+
+
+
+    //*********Getter - Funktionen************
+
     public int get_size() {
         return _size;
     }
@@ -24,10 +33,6 @@ public class Sample {
 
     public int get_channel() {
         return _channel;
-    }
-
-    public void set_data(byte[] data){
-        this._data = data;
     }
 
     public byte[] get_bytes_of_channel_i(int _channel, int Number_of_Channels_in_WAVE){
@@ -42,6 +47,15 @@ public class Sample {
             System.out.println("Kein gültiger Channel: " + _channel);
         }
         return b;
+    }
+
+
+
+
+    //**********Setter - Funktionen***********
+
+    public void set_data(byte[] data){
+        this._data = data;
     }
 
 }

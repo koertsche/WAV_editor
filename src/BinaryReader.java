@@ -10,7 +10,6 @@ public class BinaryReader {
         return Files.readAllBytes(path);
     }
 
-
     private static void log(Object msg){
         System.out.println(String.valueOf(msg));
     }
