@@ -113,8 +113,8 @@ public class WaveFile {
     }
 
     public boolean write(String filename) throws IOException{
-        BinaryReader r = new BinaryReader();
-        return r.writeBinaryFile(this._binaryexpression,filename + _WAV);
+        BinaryWriter writer = new BinaryWriter();
+        return writer.writeBinaryFile(this._binaryexpression,filename + _WAV);
     }
 
     public boolean read_Samples(){
@@ -200,11 +200,5 @@ public class WaveFile {
     private boolean binaryexpression_exists(){
         if (_binaryexpression == null){ System.out.println("Error: Keine Datei eingelesen!"); return false;} else {return true;}
     }
-
-
-
-
-
-
 
 }
