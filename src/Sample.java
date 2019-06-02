@@ -5,23 +5,11 @@ public class Sample {
     private int _channel;
 
 
-    //********Konstruktoren************
-
-    public Sample(int size){
-        this._size = size;
-        this._data = new byte[size];
-    }
-
-    public Sample(int size, byte[] data, int is_channel){
+    public Sample(int size, byte[] data){
         this._size = size;
         this._data = data;
-        this._channel = is_channel;
     }
 
-
-
-
-    //*********Getter - Funktionen************
 
     public int get_size() {
         return _size;
@@ -49,10 +37,6 @@ public class Sample {
         return b;
     }
 
-
-
-
-    //**********Setter - Funktionen***********
 
     public void set_data(byte[] data){
         this._data = data;

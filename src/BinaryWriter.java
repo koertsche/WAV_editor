@@ -5,7 +5,6 @@ import java.nio.file.Paths;
 
 public class BinaryWriter {
 
-
     boolean writeBinaryFile(byte[] bytes, String fileName) throws IOException {
         Path path = Paths.get(fileName);
         Files.write(path, bytes); //creates, overwrites

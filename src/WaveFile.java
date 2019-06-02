@@ -1,5 +1,8 @@
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class WaveFile {
@@ -18,11 +21,7 @@ public class WaveFile {
     private BinaryReader binaryReader = new BinaryReader();
 
 
-
-
-    //********** Konstruktoren ************************
-
-    public WaveFile(){
+    private WaveFile(){
         _file = null;
         _binaryexpression = null;
     }
@@ -32,12 +31,8 @@ public class WaveFile {
         _binaryexpression = null;
     }
 
-    public WaveFile(File file, byte[] binaryexpression){
-        _file = file;
-        _binaryexpression = binaryexpression;
-    }
-
-    public WaveFile(byte[] header, Sample[] samples, int framesize){
+    public WaveFile(String filename, byte[] header, Sample[] samples, int framesize){
+        _file = new File(filename);
         _samples = samples;
         _binaryexpression = new byte[(_samples.length * framesize)+44];
         set_header(header);
@@ -50,24 +45,8 @@ public class WaveFile {
         }
     }
 
-    public WaveFile(File file, Sample[] samples){
-        _file = file;
-        _samples = samples;
-
-        int framesize = (int) get_Framesize();
-
-        for (int i=OFFSET_DATA; i < get_binaryexpression().length-1; i=i+framesize){
-            for (int j=i; j < i+framesize; j++){
-                _binaryexpression[j] = _samples[i].get_data()[j];
-            }
-        }
-    }
 
 
-
-
-
-    //********** Getter - Funktionen ***********************
 
     public byte[] get_header(){
         return util.get_bytes(this._binaryexpression,0,43);
@@ -86,10 +65,6 @@ public class WaveFile {
     }
 
 
-
-
-
-    //*********** Setter - Funktionen ************************
 
     public void set_header(byte[] _header){
         if (_header.length==44 && _binaryexpression!=null) {
@@ -115,9 +90,6 @@ public class WaveFile {
 
 
 
-
-    //******* Import und Export WAVE-FILE **************
-
     public boolean read() throws IOException {
         //If there is no file linked
         if (_file == null) {
@@ -128,7 +100,7 @@ public class WaveFile {
         //If there is a file linked to this object
         if (_file.exists()){
             this._binaryexpression = binaryReader.readBinaryFile(_file.getAbsolutePath());
-            return true;
+            return read_Samples();
         } else {
             return false;
         }
@@ -140,9 +112,6 @@ public class WaveFile {
 
 
 
-
-
-    //******** Konvertiere die Binäre Darstellung der Samples der WaveDatei in Objekte der Klasse Samples *********
 
     public boolean read_Samples(){
         int bytes_per_sample = (int) get_Framesize();
@@ -156,7 +125,7 @@ public class WaveFile {
             for (int i = OFFSET_DATA; i < get_binaryexpression().length; i = i + bytes_per_sample) {
                 int index = i - count - OFFSET_DATA;
                 //Sind in einem Smaple immer beide channels hintereinander abgespeichert oder erst ale Samples_left und danach alle Samples_right
-                samples[index] = new Sample(bytes_per_sample, this.util.get_bytes(this._binaryexpression, i, i + (bytes_per_sample - 1)), (i % 2)+1);
+                samples[index] = new Sample(bytes_per_sample, this.util.get_bytes(this._binaryexpression, i, i + (bytes_per_sample - 1)));
                 count = count + (bytes_per_sample-1);
             }
             _samples = samples;
@@ -166,11 +135,34 @@ public class WaveFile {
         }
     }
 
+    public void create_patternfile() throws IOException{
+        Sample[] pattern_file = new Sample[_samples.length];
+
+        for (int i = 0; i < pattern_file.length; i++){
+
+            if(util.bytes_to_int_32_le(_samples[i].get_data()) > 60000){
+                pattern_file[i] = new Sample(4 ,util.int_32_le_to_bytes(60000));
+            } else { pattern_file[i] = new Sample(4 ,util.int_32_le_to_bytes(0)); }
+        }
+
+        WaveFile file = new WaveFile("PATTERN_" + _file.getName() ,get_header(), pattern_file, (int) get_Framesize());
+        file.write(file.get_file().getName());
+    }
+
+    public void create_CSV_with_SampleData() throws IOException{
+        FileWriter writer = new FileWriter( _file.getName() + "_SampleDate.csv");
+
+        for (int i=0; i< _samples.length; i++){
+            List<String> list = new ArrayList<>();
+            list.add(Integer.toString(util.bytes_to_int_32_le(_samples[i].get_data())));
+            CSVUtils.writeLine(writer, list, ';');
+        }
+
+        writer.flush();
+        writer.close();
+    }
 
 
-
-
-    //**************WaveFile Operations****************************
 
     public String get_chunkID(){
         if (binaryexpression_exists()){
@@ -225,10 +217,6 @@ public class WaveFile {
             return util.bytes_to_int_32_le(util.get_bytes(this._binaryexpression,34,35));
         } else {return -1;}
     }
-
-
-
-
 
 
     //*************Private Declerations****************************
