@@ -7,6 +7,7 @@ public class WaveFileUtils {
 
     //Import ByteUtils to use them in this scope
     ByteUtils util = new ByteUtils();
+    VisualUtil visualUtil = new VisualUtil();
 
     public  WaveFile binary_Operation(WaveFile waveFile_1, WaveFile waveFile_2, char operation) throws IOException {
         //Get the WaveFile with the smaller size to terminate the loop for copy the samples
@@ -18,6 +19,8 @@ public class WaveFileUtils {
         Sample[] result = new Sample[smaller_WaveFile.get_samples().length];
         //define -/+
         int operator = operator_(operation);
+        //Console output
+        System.out.println("Do binary Operation:" +smaller_WaveFile.get_file().getName() + " " + operation + " " + bigger_WaveFile.get_file().getName());
 
 
         for (int i=0; i < smaller_WaveFile.get_samples().length; i++){
@@ -31,10 +34,15 @@ public class WaveFileUtils {
                 difference_data_in_byte = util.int_32_le_to_bytes( sample2_i + operator * sample1_i );
             }
 
-            result[i] = new Sample(difference_data_in_byte.length,difference_data_in_byte);
+            result[i] = new Sample(difference_data_in_byte.length, difference_data_in_byte);
+
+            //Progressbar in Console
+            visualUtil.progressPercentage(i, smaller_WaveFile.get_samples().length-1);
         }
 
-        return new WaveFile(waveFile_1.get_file().getName().substring(0,5) + "_" + waveFile_2.get_file().getName().substring(0,5), header_of_WaveFile, result, (int) smaller_WaveFile.get_Framesize());
+        System.out.println("\nFinished Operation.");
+
+        return new WaveFile(waveFile_1.get_file().getName().substring(0,10) + "_" + waveFile_2.get_file().getName().substring(0,10), header_of_WaveFile, result, (int) smaller_WaveFile.get_Framesize());
     }
 
 

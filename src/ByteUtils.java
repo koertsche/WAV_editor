@@ -37,18 +37,6 @@ public class ByteUtils {
         return newbytes;
     }
 
-    public byte[] reverse_byte(byte b[])
-    {
-        for (int left = 0, right = b.length - 1; left < right; left++, right--) {
-            // swap the values at the left and right indices
-            byte temp = b[left];
-            b[left]  = b[right];
-            b[right] = temp;
-        }
-
-        return b;
-    }
-
 
 
 

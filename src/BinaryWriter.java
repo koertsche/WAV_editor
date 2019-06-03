@@ -8,6 +8,7 @@ public class BinaryWriter {
     boolean writeBinaryFile(byte[] bytes, String fileName) throws IOException {
         Path path = Paths.get(fileName);
         Files.write(path, bytes); //creates, overwrites
+        System.out.println("Finished writing.");
         return Files.exists(path);
     }
 

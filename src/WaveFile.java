@@ -99,6 +99,7 @@ public class WaveFile {
         }
         //If there is a file linked to this object
         if (_file.exists()){
+            System.out.println("Found " + _file.getName());
             this._binaryexpression = binaryReader.readBinaryFile(_file.getAbsolutePath());
             return read_Samples();
         } else {
@@ -107,6 +108,7 @@ public class WaveFile {
     }
 
     public boolean write(String filename) throws IOException{
+        System.out.println("Write " + filename + _WAV);
         return binaryWriter.writeBinaryFile(this._binaryexpression,filename + _WAV);
     }
 
@@ -114,8 +116,9 @@ public class WaveFile {
 
 
     public boolean read_Samples(){
+        System.out.println("Reading Sample Date...");
+
         int bytes_per_sample = (int) get_Framesize();
-        int channels = (int) get_NumChannels();
         int count = 0;
 
         if (binaryexpression_exists()) {
@@ -124,13 +127,14 @@ public class WaveFile {
 
             for (int i = OFFSET_DATA; i < get_binaryexpression().length; i = i + bytes_per_sample) {
                 int index = i - count - OFFSET_DATA;
-                //Sind in einem Smaple immer beide channels hintereinander abgespeichert oder erst ale Samples_left und danach alle Samples_right
                 samples[index] = new Sample(bytes_per_sample, this.util.get_bytes(this._binaryexpression, i, i + (bytes_per_sample - 1)));
                 count = count + (bytes_per_sample-1);
             }
             _samples = samples;
+            System.out.println("Finished reading.");
             return true;
         } else {
+            System.out.println("Finished with Error: No binary Expression from that file.");
             return false;
         }
     }
