@@ -107,9 +107,9 @@ public class WaveFile {
         }
     }
 
-    public boolean write(String filename) throws IOException{
-        System.out.println("Write " + filename + _WAV);
-        return binaryWriter.writeBinaryFile(this._binaryexpression,filename + _WAV);
+    public boolean write() throws IOException{
+        System.out.println("Write " + _file.getName() + _WAV);
+        return binaryWriter.writeBinaryFile(this._binaryexpression,_file.getName() + _WAV);
     }
 
 
@@ -150,11 +150,11 @@ public class WaveFile {
         }
 
         WaveFile file = new WaveFile("PATTERN_" + _file.getName() ,get_header(), pattern_file, (int) get_Framesize());
-        file.write(file.get_file().getName());
+        file.write();
     }
 
     public void create_CSV_with_SampleData() throws IOException{
-        FileWriter writer = new FileWriter( _file.getName() + "_SampleDate.csv");
+        FileWriter writer = new FileWriter( _file.getName() + "___SampleDate.csv");
 
         for (int i=0; i< _samples.length; i++){
             List<String> list = new ArrayList<>();
@@ -210,6 +210,7 @@ public class WaveFile {
         } else {return -1;}
     }
 
+    //Bytes per Sample
     public long get_Framesize(){
         if (binaryexpression_exists()){
             return util.bytes_to_int_32_le(util.get_bytes(this._binaryexpression,32,33));

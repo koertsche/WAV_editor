@@ -1,7 +1,4 @@
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class WaveFileUtils {
 
@@ -24,16 +21,16 @@ public class WaveFileUtils {
 
 
         for (int i=0; i < smaller_WaveFile.get_samples().length; i++){
-            int sample1_i = util.bytes_to_int_32_le(smaller_WaveFile.get_samples()[i].get_data());
-            int sample2_i = util.bytes_to_int_32_le(bigger_WaveFile.get_samples()[i].get_data());
+            int sample1_i = util.bytes_to_int_32_le(smaller_WaveFile.get_samples()[i].get_data())-32768;
+            int sample2_i = util.bytes_to_int_32_le(bigger_WaveFile.get_samples()[i].get_data())-32768;
             byte[] difference_data_in_byte;
 
-            if (sample1_i > sample2_i){
-                difference_data_in_byte = util.int_32_le_to_bytes( sample1_i + operator * sample2_i );
-            } else {
-                difference_data_in_byte = util.int_32_le_to_bytes( sample2_i + operator * sample1_i );
-            }
+            /*
+             *TODO edit samples to get the Fingerprint!
+             */
 
+
+            difference_data_in_byte = util.int_32_le_to_bytes(sample1_i + operator * sample2_i);
             result[i] = new Sample(difference_data_in_byte.length, difference_data_in_byte);
 
             //Progressbar in Console
@@ -41,8 +38,7 @@ public class WaveFileUtils {
         }
 
         System.out.println("\nFinished Operation.");
-
-        return new WaveFile(waveFile_1.get_file().getName().substring(0,10) + "_" + waveFile_2.get_file().getName().substring(0,10), header_of_WaveFile, result, (int) smaller_WaveFile.get_Framesize());
+        return new WaveFile(waveFile_1.get_file().getName().substring(0,20) + "_| " + operation +  " |_" + waveFile_2.get_file().getName().substring(0,20), header_of_WaveFile, result, (int) smaller_WaveFile.get_Framesize());
     }
 
 
@@ -82,6 +78,14 @@ public class WaveFileUtils {
             }
         }
         return operator;
+    }
+
+    private int distance_between_samples(int sample_1i, int sample_2i){
+        if (sample_1i > sample_2i){
+            return Math.abs(sample_1i - sample_2i);
+        } else {
+            return Math.abs(sample_2i -sample_1i);
+        }
     }
 
 }
