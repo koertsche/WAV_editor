@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class WaveFile {
+class WaveFile {
     //Konstanten der Klasse
     private static final String _WAV = ".wav";
     private static final int OFFSET_DATA = 44;
@@ -26,12 +26,12 @@ public class WaveFile {
         _binaryexpression = null;
     }
 
-    public WaveFile(String path){
+    WaveFile(String path){
         _file = new File(path);
         _binaryexpression = null;
     }
 
-    public WaveFile(String filename, byte[] header, Sample[] samples, int framesize){
+    WaveFile(String filename, byte[] header, Sample[] samples, int framesize){
         _file = new File(filename);
         _samples = samples;
         _binaryexpression = new byte[(_samples.length * framesize)+44];
@@ -47,29 +47,83 @@ public class WaveFile {
 
 
 
-
-    public byte[] get_header(){
+    byte[] get_header(){
         return util.get_bytes(this._binaryexpression,0,43);
     }
 
-    public File get_file() {
+    File get_file() {
         return this._file;
     }
 
-    public Sample[] get_samples() {
+    Sample[] get_samples() {
         return _samples;
     }
 
-    public byte[] get_binaryexpression() {
+    byte[] get_binaryexpression() {
         return this._binaryexpression;
+    }
+
+    public String get_chunkID(){
+        if (binaryexpression_exists()){
+            return new String(util.get_bytes(this._binaryexpression,0,3));
+        } else {return null;}
+    }
+
+    public long get_chunckSize(){
+        if (binaryexpression_exists()){
+            return util.bytes_to_int_32_le(util.get_bytes(this._binaryexpression,4,7))+8;
+        } else {return -1;}
+    }
+
+    public String get_format(){
+        if (binaryexpression_exists()){
+            return new String(util.get_bytes(this._binaryexpression,8,11));
+        } else {return null;}
+    }
+
+    public String get_formatTagID(){
+        if (binaryexpression_exists()){
+            return util.bytes_to_HexCode(util.get_bytes(this._binaryexpression,20,21));
+        } else {return null;}
+    }
+
+    public long get_Channels(){
+        if (binaryexpression_exists()){
+            return util.bytes_to_int_32_le(util.get_bytes(this._binaryexpression,22,23));
+        } else {return -1;}
+    }
+
+    public long get_sampleRate(){
+        if (binaryexpression_exists()){
+            return util.bytes_to_int_32_le(util.get_bytes(this._binaryexpression,24,27));
+        } else {return -1;}
+    }
+
+    public long get_byteRate(){
+        if (binaryexpression_exists()){
+            return util.bytes_to_int_32_le(util.get_bytes(this._binaryexpression,28,31));
+        } else {return -1;}
+    }
+
+    //Bytes per Sample
+    public long get_framesize(){
+        if (binaryexpression_exists()){
+            return util.bytes_to_int_32_le(util.get_bytes(this._binaryexpression,32,33));
+        } else {return -1;}
+    }
+
+    public long get_bitsPerSample(){
+        if (binaryexpression_exists()){
+            return util.bytes_to_int_32_le(util.get_bytes(this._binaryexpression,34,35));
+        } else {return -1;}
     }
 
 
 
-    public void set_header(byte[] _header){
-        if (_header.length==44 && _binaryexpression!=null) {
+    void set_header(byte[] header){
+        if (header.length==44 && _binaryexpression!=null) {
             for (int i = 0; i < 44; i++) {
-                _binaryexpression[i] = _header[i];
+                _binaryexpression[i] = header[i];
             }
         } else {
             System.out.println("Kein gültiger Header!");
@@ -80,8 +134,8 @@ public class WaveFile {
         this._file = file;
     }
 
-    public void set_samples(Sample[] _samples) {
-        this._samples = _samples;
+    public void set_samples(Sample[] samples) {
+        this._samples = samples;
     }
 
     public void set_binaryexpression(byte[] binaryexpression){
@@ -91,12 +145,6 @@ public class WaveFile {
 
 
     public boolean read() throws IOException {
-        //If there is no file linked
-        if (_file == null) {
-            System.out.println("Input path of WAVE-file:");
-            Scanner scanner = new Scanner(System.in);
-            this._file = new File(scanner.nextLine());
-        }
         //If there is a file linked to this object
         if (_file.exists()){
             System.out.println("Found " + _file.getName());
@@ -113,12 +161,16 @@ public class WaveFile {
     }
 
 
+    //*************Private Declerations****************************
 
+    private boolean binaryexpression_exists(){
+        if (_binaryexpression == null){ System.out.println("Error: Keine Datei eingelesen!"); return false;} else {return true;}
+    }
 
-    public boolean read_Samples(){
+    private boolean read_Samples(){
         System.out.println("Reading Sample Date...");
 
-        int bytes_per_sample = (int) get_Framesize();
+        int bytes_per_sample = (int) get_framesize();
         int count = 0;
 
         if (binaryexpression_exists()) {
@@ -138,96 +190,4 @@ public class WaveFile {
             return false;
         }
     }
-
-    public void create_patternfile() throws IOException{
-        Sample[] pattern_file = new Sample[_samples.length];
-
-        for (int i = 0; i < pattern_file.length; i++){
-
-            if(util.bytes_to_int_32_le(_samples[i].get_data()) > 60000){
-                pattern_file[i] = new Sample(4 ,util.int_32_le_to_bytes(60000));
-            } else { pattern_file[i] = new Sample(4 ,util.int_32_le_to_bytes(0)); }
-        }
-
-        WaveFile file = new WaveFile("PATTERN_" + _file.getName() ,get_header(), pattern_file, (int) get_Framesize());
-        file.write();
-    }
-
-    public void create_CSV_with_SampleData() throws IOException{
-        FileWriter writer = new FileWriter( _file.getName() + "___SampleDate.csv");
-
-        for (int i=0; i< _samples.length; i++){
-            List<String> list = new ArrayList<>();
-            list.add(Integer.toString(util.bytes_to_int_32_le(_samples[i].get_data())));
-            CSVUtils.writeLine(writer, list, ';');
-        }
-
-        writer.flush();
-        writer.close();
-    }
-
-
-
-    public String get_chunkID(){
-        if (binaryexpression_exists()){
-            return new String(util.get_bytes(this._binaryexpression,0,3));
-        } else {return null;}
-    }
-
-    public long get_Chuncksize(){
-        if (binaryexpression_exists()){
-            return util.bytes_to_int_32_le(util.get_bytes(this._binaryexpression,4,7))+8;
-        } else {return -1;}
-    }
-
-    public String get_Format(){
-        if (binaryexpression_exists()){
-            return new String(util.get_bytes(this._binaryexpression,8,11));
-        } else {return null;}
-    }
-
-    public String get_FormatTagID(){
-        if (binaryexpression_exists()){
-            return util.bytes_to_HexCode(util.get_bytes(this._binaryexpression,20,21));
-        } else {return null;}
-    }
-
-    public long get_NumChannels(){
-        if (binaryexpression_exists()){
-            return util.bytes_to_int_32_le(util.get_bytes(this._binaryexpression,22,23));
-        } else {return -1;}
-    }
-
-    public long get_SampleRate(){
-        if (binaryexpression_exists()){
-            return util.bytes_to_int_32_le(util.get_bytes(this._binaryexpression,24,27));
-        } else {return -1;}
-    }
-
-    public long get_ByteRate(){
-        if (binaryexpression_exists()){
-            return util.bytes_to_int_32_le(util.get_bytes(this._binaryexpression,28,31));
-        } else {return -1;}
-    }
-
-    //Bytes per Sample
-    public long get_Framesize(){
-        if (binaryexpression_exists()){
-            return util.bytes_to_int_32_le(util.get_bytes(this._binaryexpression,32,33));
-        } else {return -1;}
-    }
-
-    public long get_BitsPerSample(){
-        if (binaryexpression_exists()){
-            return util.bytes_to_int_32_le(util.get_bytes(this._binaryexpression,34,35));
-        } else {return -1;}
-    }
-
-
-    //*************Private Declerations****************************
-
-    private boolean binaryexpression_exists(){
-        if (_binaryexpression == null){ System.out.println("Error: Keine Datei eingelesen!"); return false;} else {return true;}
-    }
-
 }

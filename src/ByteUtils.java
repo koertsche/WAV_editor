@@ -12,7 +12,7 @@ public class ByteUtils {
         return hexStringToByteArray(int_to_HexCode(value));
     }
 
-    public String bytes_to_HexCode(byte[] b){
+    String bytes_to_HexCode(byte[] b){
         String str = "";
         for (int i=b.length-1; i >= 0;i--) {
             String temp = Integer.toHexString(b[i] & 0xFF);
@@ -26,10 +26,7 @@ public class ByteUtils {
         return str;
     }
 
-
-
-
-    public byte[] get_bytes(byte[] b, int start_index, int end_index){
+    byte[] get_bytes(byte[] b, int start_index, int end_index){
         byte[] newbytes = new byte[end_index-start_index+1];
         for (int i=start_index; i <= end_index; i++){
             newbytes[i-start_index] = b[i];
@@ -74,16 +71,21 @@ public class ByteUtils {
         if (d <= 0) return "0000";
         int base = 16;   // flexible to change in any base under 16
         String hex = "";
-        while (d > 0) {
-            int digit = d % base;              // rightmost digit
-            hex = digits.charAt(digit) + hex;  // string concatenation
+        String hex_tmp = "00";
+        while (d > 0){
+            if (hex.length() == 2){
+                hex_tmp = hex;
+                hex = "";
+            }
+            int digit = d % base;// rightmost digit
+            hex = digits.charAt(digit) + hex;
             d = d / base;
         }
 
-        while (hex.length() < 4){
+        if (hex.length() < 2){
             hex = "0" + hex;
         }
-        return hex;
+        return hex_tmp + hex;
     }
 
     public static byte[] hexStringToByteArray(String s) {
@@ -94,15 +96,7 @@ public class ByteUtils {
             int v = Integer.parseInt(s.substring(index, index + 2), 16);
             b[i] = (byte) v;
         }
-
-        byte[] convert = new byte[b.length];
-
-        for (int i=0; i < convert.length; i=i+2 ){
-            convert[b.length-i-1] = b[i];
-            convert[b.length-i-2] = b[i+1];
-        }
-
-        return convert;
+        return b;
     }
 
     private String hex_letters_to_StringNum(char c){
